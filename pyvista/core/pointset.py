@@ -16,7 +16,7 @@ from vtk.util.numpy_support import (numpy_to_vtk, numpy_to_vtkIdTypeArray,
                                     vtk_to_numpy)
 
 import pyvista
-from pyvista.utilities import get_scalar
+from pyvista.utilities import generate_plane, get_scalar
 
 from .common import Common
 from .filters import _get_output
@@ -1654,6 +1654,26 @@ class PolyData(vtkPolyData, PointSet):
         alg.SetInputData(self)
         alg.Update()
         return _get_output(alg)
+
+
+    def project_points_to_plane(self, origin=None, normal=(0,0,1), inplace=False):
+        """Project points of this mesh to a plane"""
+        if origin is None:
+            origin = self.center
+        if not inplace:
+            mesh = self.copy()
+        else:
+            mesh = self
+        # Make plane
+        plane = generate_plane(normal, origin)
+        print(plane.GetNormal())
+        print(plane.GetOrigin())
+        # Perform projection in place on the copied mesh
+        f = lambda p: plane.ProjectPoint(p, p)
+        np.apply_along_axis(f, 1, mesh.points)
+        if not inplace:
+            return mesh
+        return
 
 
 class PointGrid(PointSet):
