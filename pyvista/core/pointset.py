@@ -1,6 +1,7 @@
 """
 Sub-classes for vtk.vtkPolyData
 """
+import collections
 import logging
 import os
 
@@ -1658,8 +1659,11 @@ class PolyData(vtkPolyData, PointSet):
 
     def project_points_to_plane(self, origin=None, normal=(0,0,1), inplace=False):
         """Project points of this mesh to a plane"""
+        if not isinstance(normal, collections.Iterable) or len(normal) != 3:
+            raise TypeError('Normal must be a length three vector')
         if origin is None:
-            origin = self.center
+            origin = np.array(self.center) - np.array(normal)*self.length/2.
+        # choose what mesh to use
         if not inplace:
             mesh = self.copy()
         else:
