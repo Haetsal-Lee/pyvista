@@ -470,7 +470,7 @@ def test_project_points_to_plane():
     poly = pyvista.StructuredGrid(xx, yy, zz).extract_geometry()
     poly['elev'] = zz.ravel(order='f')
     # Test the filter
-    projected = poly.project_points_to_plane(normal=(0,0,1))
+    projected = poly.project_points_to_plane(origin=poly.center, normal=(0,0,1))
     assert np.allclose(projected.points[:,-1], poly.center[-1])
     projected = poly.project_points_to_plane(normal=(0,1,1))
     assert projected.n_points
