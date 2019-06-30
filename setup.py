@@ -40,7 +40,7 @@ setup(
     packages=[package_name, 'pyvista.examples'],
     version=__version__,
     description='Easier Pythonic interface to VTK',
-    long_description=open(readme_file).read(),
+    long_description=open(readme_file, encoding='UTF8').read(),
     author='PyVista Developers',
     author_email='info@pyvista.org',
     license='MIT',
